@@ -5,7 +5,7 @@ This is official code of
 > Lemeng Wu, Dilin Wang, Chengyue Gong, Xingchao Liu, Yunyang Xiong, Rakesh Ranjan, Raghuraman Krishnamoorthi, Vikas Chandra, Qiang Liu
 
 <p align="center">
-  <img src="assets/teaser.pdf" width="80%"/>
+  <img src="assets/teaser.png" width="90%"/>
 </p>
 
 ## About This Code:
