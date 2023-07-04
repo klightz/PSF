@@ -1,5 +1,4 @@
-# PSF
-[paper](https://arxiv.org/abs/2212.01747)
+# PSF [paper](https://arxiv.org/abs/2212.01747)
 This is official code of
 > **[Fast Point Cloud Generation with Straight Flows](https://arxiv.org/abs/2212.01747)** \
 > Lemeng Wu, Dilin Wang, Chengyue Gong, Xingchao Liu, Yunyang Xiong, Rakesh Ranjan, Raghuraman Krishnamoorthi, Vikas Chandra, Qiang Liu
