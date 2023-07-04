@@ -1,5 +1,5 @@
-# PSF [paper](https://arxiv.org/abs/2212.01747)
-This is official code of
+# PSF
+This is the official code of
 > **[Fast Point Cloud Generation with Straight Flows](https://arxiv.org/abs/2212.01747)** \
 > Lemeng Wu, Dilin Wang, Chengyue Gong, Xingchao Liu, Yunyang Xiong, Rakesh Ranjan, Raghuraman Krishnamoorthi, Vikas Chandra, Qiang Liu
 
@@ -93,4 +93,4 @@ You can adjust the step in this test code. For flow, reflow model, we can still 
 ```
 
 ## Acknowledgement:
-This code is built based on [PVD](https://github.com/alexzhou907/PVD), thank for their great code repo!
+This code is built based on [PVD](https://github.com/alexzhou907/PVD). Thanks for their great code repo!
