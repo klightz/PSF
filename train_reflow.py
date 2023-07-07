@@ -14,7 +14,8 @@ from datasets.shapenet_data_pc import ShapeNet15kPointClouds
 
 
 class Flowmodel:
-    def __init__(self):
+    def __init__(self, opt):
+        self.num_timesteps = opt.time_num
         return
 
     def p_mean(self, denoise_fn, data, t):
@@ -34,7 +35,7 @@ class Flowmodel:
         """
         model_mean = self.p_mean(denoise_fn, data=data, t=t)
 
-        return sample
+        return model_mean
 
 
     def p_sample_loop(self, denoise_fn, shape, device,
@@ -47,7 +48,7 @@ class Flowmodel:
 
         assert isinstance(shape, (tuple, list))
         img_t = noise_fn(size=shape, dtype=torch.float, device=device)
-        for t in range(1):
+        for t in range(self.num_timesteps):
             t_ = torch.empty(shape[0], dtype=torch.int64, device=device).fill_(t)
             img_t = self.p_sample(denoise_fn=denoise_fn, data=img_t,t=t_, noise_fn=noise_fn,
                                   clip_denoised=clip_denoised, return_pred_xstart=False)
@@ -70,7 +71,7 @@ class Flowmodel:
 
         img_t = noise_fn(size=shape, dtype=torch.float, device=device)
         imgs = [img_t]
-        for t in range(1):
+        for t in range(self.num_timesteps):
 
             t_ = torch.empty(shape[0], dtype=torch.int64, device=device).fill_(t)
             img_t = self.p_sample(denoise_fn=denoise_fn, data=img_t, t=t_, noise_fn=noise_fn,
@@ -133,7 +134,7 @@ class PVCNN2(PVCNN2Base):
 class Model(nn.Module):
     def __init__(self, args, betas, loss_type: str, model_mean_type: str, model_var_type:str):
         super(Model, self).__init__()
-        self.flow = Flowmodel()
+        self.flow = Flowmodel(args)
 
         self.model = PVCNN2(num_classes=args.nc, embed_dim=args.embed_dim, use_att=args.attention,
                             dropout=args.dropout, extra_feature_channels=0)

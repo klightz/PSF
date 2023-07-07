@@ -14,7 +14,8 @@ from datasets.shapenet_data_pc import ShapeNet15kPointClouds
 
 
 class Flowmodel:
-    def __init__(self):
+    def __init__(self, opt):
+        self.num_timesteps = opt.time_num
         return
 
     def p_mean(self, denoise_fn, data, t):
@@ -34,7 +35,7 @@ class Flowmodel:
         """
         model_mean = self.p_mean(denoise_fn, data=data, t=t)
 
-        return sample
+        return model_mean
 
 
     def p_sample_loop(self, denoise_fn, shape, device,
@@ -47,7 +48,7 @@ class Flowmodel:
 
         assert isinstance(shape, (tuple, list))
         img_t = noise_fn(size=shape, dtype=torch.float, device=device)
-        for t in range(1):
+        for t in range(self.num_timesteps):
             t_ = torch.empty(shape[0], dtype=torch.int64, device=device).fill_(t)
             img_t = self.p_sample(denoise_fn=denoise_fn, data=img_t,t=t_, noise_fn=noise_fn,
                                   clip_denoised=clip_denoised, return_pred_xstart=False)
@@ -70,7 +71,7 @@ class Flowmodel:
 
         img_t = noise_fn(size=shape, dtype=torch.float, device=device)
         imgs = [img_t]
-        for t in range(1):
+        for t in range(self.num_timesteps):
 
             t_ = torch.empty(shape[0], dtype=torch.int64, device=device).fill_(t)
             img_t = self.p_sample(denoise_fn=denoise_fn, data=img_t, t=t_, noise_fn=noise_fn,
@@ -131,7 +132,7 @@ class PVCNN2(PVCNN2Base):
 class Model(nn.Module):
     def __init__(self, args, betas, loss_type: str, model_mean_type: str, model_var_type:str):
         super(Model, self).__init__()
-        self.flow = Flowmodel()
+        self.flow = Flowmodel(args)
 
         self.model = PVCNN2(num_classes=args.nc, embed_dim=args.embed_dim, use_att=args.attention,
                             dropout=args.dropout, extra_feature_channels=0)
@@ -354,7 +355,9 @@ def train(gpu, opt, output_dir, noises_init):
         lr_scheduler.step(epoch)
 
         for i, data in enumerate(dataloader):
+            #break
             x = data['train_points'].transpose(1,2)
+            
             noises_batch = noises_init[data['idx']].transpose(1,2)
 
 
@@ -364,6 +367,7 @@ def train(gpu, opt, output_dir, noises_init):
             elif opt.distribution_type == 'single':
                 x = x.cuda()
                 noises_batch = noises_batch.cuda()
+            break
             loss = model.get_loss_iter(x, noises_batch).mean()
 
             optimizer.zero_grad()
@@ -383,12 +387,12 @@ def train(gpu, opt, output_dir, noises_init):
                         ))
 
 
-
+        
         if (epoch + 1) % opt.vizIter == 0 and should_diag:
             logger.info('Generation: eval')
 
             model.eval()
-            x = x1
+            x = x
             with torch.no_grad():
 
                 x_gen_eval = model.gen_samples(new_x_chain(x, 25).shape, x.device, clip_denoised=False)
@@ -478,12 +482,12 @@ def main():
 def parse_args():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataroot', default='./data/ShapeNetCore.v2.PC15k/')
-    parser.add_argument('--category', default='chair')
+    parser.add_argument('--dataroot', default='./ShapeNetCore.v2.PC15k/')
+    parser.add_argument('--category', default='car')
 
     parser.add_argument('--bs', type=int, default=96, help='input batch size')
     parser.add_argument('--workers', type=int, default=16, help='workers')
-    parser.add_argument('--niter', type=int, default=10000, help='number of epochs to train for')
+    parser.add_argument('--niter', type=int, default=20000, help='number of epochs to train for')
 
     parser.add_argument('--nc', default=3)
     parser.add_argument('--npoints', default=2048)
@@ -501,7 +505,7 @@ def parse_args():
     parser.add_argument('--model_mean_type', default='eps')
     parser.add_argument('--model_var_type', default='fixedsmall')
 
-    parser.add_argument('--lr', type=float, default=2e-5, help='learning rate for E, default=0.0002')
+    parser.add_argument('--lr', type=float, default=2e-4, help='learning rate for E, default=0.0002')
     parser.add_argument('--beta1', type=float, default=0.5, help='beta1 for adam. default=0.5')
     parser.add_argument('--decay', type=float, default=0, help='weight decay for EBM')
     parser.add_argument('--grad_clip', type=float, default=None, help='weight decay for EBM')
