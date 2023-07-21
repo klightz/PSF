@@ -355,7 +355,7 @@ def train(gpu, opt, output_dir, noises_init):
         lr_scheduler.step(epoch)
 
         for i, data in enumerate(dataloader):
-            #break
+            
             x = data['train_points'].transpose(1,2)
             
             noises_batch = noises_init[data['idx']].transpose(1,2)
@@ -367,7 +367,7 @@ def train(gpu, opt, output_dir, noises_init):
             elif opt.distribution_type == 'single':
                 x = x.cuda()
                 noises_batch = noises_batch.cuda()
-            break
+            
             loss = model.get_loss_iter(x, noises_batch).mean()
 
             optimizer.zero_grad()
