@@ -181,7 +181,7 @@ class GaussianDiffusion:
                                   clip_denoised=clip_denoised, return_pred_xstart=False)
 
         assert img_t.shape == shape
-        return img_t, x0
+        return x0, img_t
 
     def p_sample_loop_trajectory(self, denoise_fn, shape, device, freq,
                                  noise_fn=torch.randn,clip_denoised=True, keep_running=False):
