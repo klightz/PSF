@@ -51,10 +51,10 @@ $ python train_flow.py --category car|chair|airplane
 Assume the checkpoint is saved as flow_checkpoint.pth (you can find it in the ./output/train_flow/ )
 
 Second Stage, straight the flow, first sample the data pairs. We provide a single GPU version, in practice, we use
-multiGPU to speed up, it needs some file operator and we do not clean it up yet.
+multiGPU to speed up.
 
 ```bash
-$ python train_flow.py --category car|chair|airplane --model flow_checkpoint.pth
+$ python sample_flow.py --category car|chair|airplane --model flow_checkpoint.pth
 ```
 Then run the reflow procedure:
 
