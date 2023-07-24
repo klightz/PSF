@@ -8,7 +8,7 @@ This is the official code of
 </p>
 
 ## About This Code:
-Now we release code for training and inference. Pretrained checkpoint work in progress.
+Now we release code for training and inference. Some works are still in progress including pretrained checkpoint.
 
 # Requirements:
 This code is largely build based on [PVD](https://github.com/alexzhou907/PVD).
