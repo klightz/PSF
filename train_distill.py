@@ -66,7 +66,7 @@ class Flowmodel:
         """
         assert isinstance(shape, (tuple, list))
 
-        total_steps =  self.num_timesteps if not keep_running else len(self.betas)
+        total_steps =  1
 
         img_t = noise_fn(size=shape, dtype=torch.float, device=device)
         imgs = [img_t]
