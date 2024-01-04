@@ -34,7 +34,7 @@ class Flowmodel:
         """
         model_mean = self.p_mean(denoise_fn, data=data, t=t)
 
-        return sample
+        return model_mean
 
 
     def p_sample_loop(self, denoise_fn, shape, device,
